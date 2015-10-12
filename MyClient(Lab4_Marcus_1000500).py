@@ -149,8 +149,12 @@ def deleteDiscountStall(id):
 	return r.json, r.text
 
 print getDiscountStalls()[1]
+
 print addIntoDiscount(2)[1]
+
 print getDiscountStalls()[1]
+
 print deleteDiscountStall(2)[1]
+
 print getDiscountStalls()[1]
-print modifyCanteenAccounts("admin", "Password123", "bank", 650165)[1]
+# print modifyCanteenAccounts("admin", "Password123", "bank", 650165)[1]
