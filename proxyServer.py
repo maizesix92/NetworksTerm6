@@ -7,8 +7,7 @@ from thread import *
 import sys,os
 
 def clientthread(tcpCliSock):
-    message = tcpCliSock.recv(1000)
-    print message    
+    message = tcpCliSock.recv(1000) 
     # Extract the parameters from the given message
     # we need to fill "host": the host name in the request
     # we need to fill "resource": the resource requested on the target system
@@ -50,8 +49,8 @@ def clientthread(tcpCliSock):
     print "Resource: "+resource
     try:
         # Check wether the file exist in the cache
-        f = open(filetouse, "r")                      
-        outputdata = f.readlines()                        
+        f = open(filetouse, "r")
+        outputdata = f.readlines()
         fileExist = True
         # Fill in start.
         # send out the cached file content here
@@ -59,14 +58,14 @@ def clientthread(tcpCliSock):
         tcpCliSock.flush()
         # Fill in end.
         tcpCliSock.close()
-        print 'Read from cache'     
+        print 'Read from cache'
 	# Error handling for file not found in cache
     except IOError:
         if fileExist == False:
             c = socket(AF_INET, SOCK_STREAM)# Fill in start.	Create a new client socket here	# Fill in end.
             c.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
             os.environ['http_proxy']=''
-            
+
             # print 'host is '+host+ " resource is"+ resource
             try:
                 # Connect to the socket to port 80
@@ -78,7 +77,7 @@ def clientthread(tcpCliSock):
                 # Create a temporary file on this socket and ask port 80 for the file requested by the client
                 fileobj = c.makefile()
                 fileobj.write("GET "+ resource + " HTTP/1.1\r\n")
-                fileobj.write("Host: "+host+"\r\n")                
+                fileobj.write("Host: "+host+"\r\n")
                 if accept:
                     fileobj.write("Accept: "+accept+"\r\n")
                 fileobj.write("Connection: close\r\n")
@@ -89,16 +88,16 @@ def clientthread(tcpCliSock):
                 buf=fileobj.readlines()
                 # Fill in end.
                 fileobj.close()
-                # Create a new file in the cache for the requested file. 
+                # Create a new file in the cache for the requested file.
                 # Also send the response in the buffer to client socket and the corresponding file in the cache
                 print "received response, saving in "+filetouse
-                tmpFile = open("./" + filetouse,"wb")  
+                tmpFile = open("./" + filetouse,"wb")
                 # Fill in start.
                 # save returned data into cache file
                 # also send returned data to original client
                 tmpFile.write(buf)
                 tcpCliSock.send(buf)
-                # Fill in end.			
+                # Fill in end.
             except gaierror as e:
                 print e
             except:
@@ -108,14 +107,14 @@ def clientthread(tcpCliSock):
             # Fill in start.
             print tcpCliSock.recv(1000)
             # Fill in end.
-        # Close the client and the server sockets    
-        tcpCliSock.close() 
+        # Close the client and the server sockets
+        tcpCliSock.close()
         # Fill in start.
-        tcpSerSock.close()		
+        tcpSerSock.close()
         # Fill in end.
 
 
-    
+
 # Create a server socket, bind it to a port and start listening
 tcpSerSock = socket(AF_INET, SOCK_STREAM)
 # Fill in start.
@@ -130,5 +129,3 @@ while 1:
     print 'Received a connection from:', addr
     #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
     start_new_thread(clientthread ,(tcpCliSock,))
-    
-
